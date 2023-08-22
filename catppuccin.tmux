@@ -93,19 +93,13 @@ main() {
   setw pane-border-style "$pane_border_style"
   setw pane-border-format "$pane_format"
 
-  # window
-  local window_status_separator window_left_separator window_right_separator \
-    window_middle_separator window_number_position window_status_enable \
-    window_format window_current_format
+  # --------=== Statusline
 
-  window_status_separator=$(get_tmux_option "@catppuccin_window_separator" "")
-  setw window-status-separator "$window_status_separator"
-
-  window_left_separator=$(get_tmux_option "@catppuccin_window_left_separator" "█")
-  window_right_separator=$(get_tmux_option "@catppuccin_window_right_separator" "█")
-  window_middle_separator=$(get_tmux_option "@catppuccin_window_middle_separator" "█ ")
-  window_number_position=$(get_tmux_option "@catppuccin_window_number_position" "left") # right, left
-  window_status_enable=$(get_tmux_option "@catppuccin_window_status_enable" "no")       # right, left
+  local window_left_separator=$(get_tmux_option "@catppuccin_window_left_separator" "█")
+  local window_right_separator=$(get_tmux_option "@catppuccin_window_right_separator" "█ ")
+  local window_middle_separator=$(get_tmux_option "@catppuccin_window_middle_separator" " | ")
+  local window_number_position=$(get_tmux_option "@catppuccin_window_number_position" "right") # right, left
+  local window_status_enable=$(get_tmux_option "@catppuccin_window_status_enable" "no") # right, left
 
   window_format=$(load_modules "window_default_format" "$modules_custom_path" "$modules_window_path")
   setw window-status-format "$window_format"
@@ -113,21 +107,17 @@ main() {
   window_current_format=$(load_modules "window_current_format" "$modules_custom_path" "$modules_window_path")
   setw window-status-current-format "$window_current_format"
 
-  # status module
-  local status_left_separator status_right_separator status_connect_separator \
-    status_fill status_modules_left status_modules_right
-  status_left_separator=$(get_tmux_option "@catppuccin_status_left_separator" "")
-  status_right_separator=$(get_tmux_option "@catppuccin_status_right_separator" "█")
-  status_connect_separator=$(get_tmux_option "@catppuccin_status_connect_separator" "yes")
-  status_fill=$(get_tmux_option "@catppuccin_status_fill" "icon")
+  local status_left_separator=$(get_tmux_option "@catppuccin_status_left_separator" "█")
+  local status_right_separator=$(get_tmux_option "@catppuccin_status_right_separator" "█")
+  local status_right_separator_inverse=$(get_tmux_option "@catppuccin_status_right_separator_inverse" "no")
+  local status_connect_separator=$(get_tmux_option "@catppuccin_status_connect_separator" "yes")
+  local status_fill=$(get_tmux_option "@catppuccin_status_fill" "icon")
 
-  status_modules_left=$(get_tmux_option "@catppuccin_status_modules_left" "")
-  loaded_modules_left=$(load_modules "$status_modules_left" "$modules_custom_path" "$modules_status_path")
-  set status-left "$loaded_modules_left"
+  local status_modules=$(get_tmux_option "@catppuccin_status_modules" "application session user")
+  local loaded_modules=$( load_modules "$status_modules")
 
-  status_modules_right=$(get_tmux_option "@catppuccin_status_modules_right" "application session")
-  loaded_modules_right=$(load_modules "$status_modules_right" "$modules_custom_path" "$modules_status_path")
-  set status-right "$loaded_modules_right"
+  set status-left ""
+  set status-right "$loaded_modules"
 
   # modes
   setw clock-mode-colour "${thm_blue}"
